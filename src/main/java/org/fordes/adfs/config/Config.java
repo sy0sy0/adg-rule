@@ -1,6 +1,7 @@
 package org.fordes.adfs.config;
 
 import lombok.Data;
+import org.fordes.adfs.model.Rule;
 import org.fordes.adfs.util.BloomFilter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.task.ThreadPoolTaskExecutorBuilder;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,9 +25,10 @@ public class Config {
     private Double faultTolerance = 0.0001;
     private Integer expectedQuantity = 2000000;
     private Integer warnLimit = 6;
+    private Set<String> exclude;
 
     @Bean
-    public BloomFilter<String> bloomFilter() {
+    public BloomFilter<Rule> bloomFilter() {
         double falsePositiveProbability = Optional.ofNullable(faultTolerance).orElse(0.0001);
         int expectedNumberOfElements = Optional.ofNullable(expectedQuantity).orElse(2000000);
         return new BloomFilter<>(falsePositiveProbability, expectedNumberOfElements);
